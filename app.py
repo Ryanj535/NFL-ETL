@@ -22,8 +22,8 @@ Base = automap_base()
 # reflect the tables
 Base.prepare(engine, reflect=True)
 
-# Save references to each table
-Stats = Base.classes.qb_stats
+# Save references to the table
+Stats = Base.classes.qb_stats2
 
 # Create our session (link) from Python to the DB
 session = Session(engine)
@@ -41,3 +41,14 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     """List all available api routes."""
+    return (
+        f"Available Routes:<br/>"
+        f"/api/v1.0/jsonified<br/>"
+    )
+
+
+@app.route("/api/v1.0/jsonified")
+def stations():
+    """Return a list of all stations"""
+    session = Session(engine)
+    return jsonify(Stats)
