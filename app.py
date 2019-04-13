@@ -44,21 +44,6 @@ def home():
 
 
 @app.route("/api/v1.0/jsonified")
-# def json():
-#     """Return a list of all stations"""
-#     session = Session(engine)
-# #     return jsonify(Stats)
-# def dict_factory(cursor, row):
-#     d = {}
-#     for idx, col in enumerate(cursor.description):
-#         d[col[0]] = row[idx]
-#     return d
-
-# con = sqlite3.connect("nfl_etl.sqlite")
-# con.row_factory = dict_factory
-# cur = con.cursor()
-# cur.execute("select 1 as a")
-# print(cur.fetchone()["a"])
 def stations():
     """Return a list of all stations"""
     session = Session(engine)
@@ -90,6 +75,17 @@ def stations():
         stats_list.append(stats_dict)
         
     return jsonify(stats_list)
+
+@app.route("/search", methods=['GET','POST'])
+def search():
+    session = Session(engine)
+    results = session.query(Stats.Player,Stats.Year_Drafted, Stats.Round_Drafted,
+                            Stats.Overall_Pick, Stats.Draft_Position, 
+                            Stats.Avg_Attempts, Stats.Avg_Completions, 
+                            Stats.Avg_Passing_Yards, Stats.Avg_Yards_per_Attempt, 
+                            Stats.Avg_TDs, Stats.Avg_Sacks, Stats.Avg_Loss_of_Yards,
+                            Stats.Avg_QBR_REAL, Stats.Avg_Points, Stats.Game_Total ).filter(Stats.Year_Drafted==year_selected).all()
+    return render_template("search.html", )
 
 if __name__ == '__main__':
     app.run(debug=True)
