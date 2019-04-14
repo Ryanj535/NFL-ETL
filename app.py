@@ -35,6 +35,7 @@ app = Flask(__name__)
 # Flask Routes
 #################################################
 
+#Create landing page with app route to the JSON document of quarterback data
 @app.route("/")
 def home():
     """List all available api routes."""
@@ -43,10 +44,17 @@ def home():
         f"/api/v1.1/jsonified<br/>"
     )
 
-
+#Create the rout for the JSON document of quarterback data
+#Query the sqlite database quarterback table and return the stats in a JSON document
+#Initnate session
+#Query the database
+#Create empty list and dictionaries to hold the database data
+#Loop through the table and add the data to the lists and dictionary
+#Zip the resulting list into a master dictionary of NFL quarterback 
+#Convert the dinctionary to a JSON object and return it
 @app.route("/api/v1.1/jsonified")
-def stations():
-    """Return a list of all stations"""
+def quarterbacks():
+    """Return a list of all quarterbacks and stats"""
     session = Session(engine)
     results = session.query(Stats.Player,Stats.Year_Drafted, Stats.Round_Drafted,
                             Stats.Overall_Pick, Stats.Draft_Position, 
@@ -62,9 +70,6 @@ def stations():
     for a in results:
         player_names.append(str(a[0]))
 
-    # for a in player_names:
-    # for a,b,c,d,e,f,g,h,i,j,k,l,m,n,o in results:
-    #     roster_dict["Player"]=a
     for a,b,c,d,e,f,g,h,i,j,k,l,m,n,o in results:
         player_dict["Year_Drafted"] = b
         player_dict["Round_Drafted"] = c
@@ -86,19 +91,6 @@ def stations():
     nfl_dict = dict(zip(player_names,stats_list))
         
     return jsonify(nfl_dict)
-
-# @app.route("/search", methods=['GET','POST'])
-# def search():
-#     session = Session(engine)
-#     results2 = session.query(Stats.Player,Stats.Year_Drafted, Stats.Round_Drafted,
-#                             Stats.Overall_Pick, Stats.Draft_Position, 
-#                             Stats.Avg_Attempts, Stats.Avg_Completions, 
-#                             Stats.Avg_Passing_Yards, Stats.Avg_Yards_per_Attempt, 
-#                             Stats.Avg_TDs, Stats.Avg_Sacks, Stats.Avg_Loss_of_Yards,
-#                             Stats.Avg_QBR_REAL, Stats.Avg_Points, Stats.Game_Total ).filter(Stats.Year_Drafted==2005).all()
-    
-    
-#     return ()
 
 if __name__ == '__main__':
     app.run(debug=True)
